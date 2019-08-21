@@ -41,19 +41,20 @@ class MunTemplate {
         return $retval;
     }
 
-    public function render_template($template, $vars) {
-        $set_vars = "<?php\n";
+    public function render_template($template, $vars, $debug_mode=0) {
+        $error_report  = '<?php error_reporting(';
+        $error_report .= $debug_mode ? 'E_ALL); ?>' : '0); ?>';
+
         foreach($vars as $var=>$value) {
-            $$var = $value; // ${variable_name} = value;
+            ${$var} = $value; // ${variable_name} = value;
         }
-        $set_vars .= "?>";
 
         $exec_code = file_get_contents($this->template_path.'/'.$template);
 
         $exec_code = $this->process_for($exec_code);
         $exec_code = $this->process_if($exec_code);
         $exec_code = $this->process_var($exec_code);
-        $exec_code = $set_vars.$exec_code;
+        $exec_code = $error_report.$exec_code;
         
         eval("?>$exec_code");
         return true;
