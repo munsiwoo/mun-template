@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+# error_reporting(0);
 # github.com/munsiwoo/mun-template
 
 class MunTemplate {
@@ -41,15 +41,44 @@ class MunTemplate {
         return $retval;
     }
 
-    public function render_template($template, $vars, $debug_mode=0) {
+    private function remove_php_tag($template) {
+        $retval = preg_replace('/(<\?(?!xml))/', '&lt;?', $template);
+        return $retval;
+    }
+
+    public function render_template($template, $vars=[], $debug_mode=0, $php_tag=0) {
         $error_report  = '<?php error_reporting(';
         $error_report .= $debug_mode ? 'E_ALL); ?>' : '0); ?>';
 
-        foreach($vars as $var=>$value) {
-            ${$var} = $value; // ${variable_name} = value;
+        foreach($vars as $var_name=>$value) {
+            ${$var_name} = $value; // ${variable_name} = value;
         }
 
         $exec_code = file_get_contents($this->template_path.'/'.$template);
+        if(!$php_tag) {
+            $exec_code = $this->remove_php_tag($exec_code);
+        }
+
+        $exec_code = $this->process_for($exec_code);
+        $exec_code = $this->process_if($exec_code);
+        $exec_code = $this->process_var($exec_code);
+        $exec_code = $error_report.$exec_code;
+
+        eval("?>$exec_code");
+        return true;
+    }
+
+    public function render_template_string($exec_code, $vars=[], $debug_mode=0, $php_tag=0) {
+        $error_report  = '<?php error_reporting(';
+        $error_report .= $debug_mode ? 'E_ALL); ?>' : '0); ?>';
+
+        foreach($vars as $var_name=>$value) {
+            ${$var_name} = $value; // ${variable_name} = value;
+        }
+
+        if(!$php_tag) {
+            $exec_code = $this->remove_php_tag($exec_code);
+        }
 
         $exec_code = $this->process_for($exec_code);
         $exec_code = $this->process_if($exec_code);
@@ -60,4 +89,3 @@ class MunTemplate {
         return true;
     }
 }
-
