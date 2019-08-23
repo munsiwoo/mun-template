@@ -1,5 +1,5 @@
 <?php
-# error_reporting(0);
+error_reporting(0);
 # github.com/munsiwoo/mun-template
 
 class MunTemplate {
@@ -74,8 +74,6 @@ class MunTemplate {
         $exec_code = $this->process_if($exec_code);
         $exec_code = $this->process_var($exec_code);
         $exec_code = $error_report.$exec_code;
-
-        highlight_string($exec_code);
 
         eval("?>$exec_code");
         return true;
