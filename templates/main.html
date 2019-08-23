@@ -26,5 +26,11 @@
     <hr>
     <h3>print passed variable</h3>
     hello, @var($name)
+
+    <h3>foreach</h3>
+    @mun foreach(['a','b','c'] as $a)
+        <p>@var($a)</p>
+    @endforeach
+
 </body>
 </html>
