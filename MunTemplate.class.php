@@ -19,10 +19,20 @@ class MunTemplate {
 
     private function process_for($template) {
         $start_regexp = "/\@mun\s+for(?:\s+)?(?<mun>\(((?:[^()]|(?&mun))*)\))/mis";
-        $end_regexp = "/\@endfor/mis";
+        $end_regexp = "/\@endfor(?:\s+)?$/mis";
 
         $template = preg_replace($start_regexp, '<?php for($2) : ?>', $template);
         $retval = preg_replace($end_regexp, '<?php endfor; ?>', $template);
+
+        return $retval;
+    }
+
+    private function process_foreach($template) {
+        $start_regexp = "/\@mun\s+foreach(?:\s+)?(?<mun>\(((?:[^()]|(?&mun))*)\))/mis";
+        $end_regexp = "/\@endforeach(?:\s+)?$/mis";
+
+        $template = preg_replace($start_regexp, '<?php foreach($2) : ?>', $template);
+        $retval = preg_replace($end_regexp, '<?php endforeach; ?>', $template);
 
         return $retval;
     }
@@ -40,7 +50,7 @@ class MunTemplate {
 
         return $retval;
     }
-
+    
     private function remove_php_tag($template) {
         $retval = preg_replace('/(<\?(?!xml))/', '&lt;?', $template);
         return $retval;
@@ -60,9 +70,12 @@ class MunTemplate {
         }
 
         $exec_code = $this->process_for($exec_code);
+        $exec_code = $this->process_foreach($exec_code);
         $exec_code = $this->process_if($exec_code);
         $exec_code = $this->process_var($exec_code);
         $exec_code = $error_report.$exec_code;
+
+        highlight_string($exec_code);
 
         eval("?>$exec_code");
         return true;
@@ -81,6 +94,7 @@ class MunTemplate {
         }
 
         $exec_code = $this->process_for($exec_code);
+        $exec_code = $this->process_foreach($exec_code);
         $exec_code = $this->process_if($exec_code);
         $exec_code = $this->process_var($exec_code);
         $exec_code = $error_report.$exec_code;
