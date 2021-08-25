@@ -1,36 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mun Template</title>
-</head>
-<body>
-    <h1>Mun Template</h1>
-    <p>Mun Template is Simple PHP Template engine.</p>
-    <h3>for statement</h3>
-    @mun for($i=0; $i<10; $i++)
-        @mun for($j=0; $j<$i; $j++)
-            *
-        @endfor
-        <br>
+@import(header.html)
+
+<h1>Mun Template</h1>
+<p>Mun Template is Simple PHP Template engine.</p>
+<h3>for statement</h3>
+@mun for($i=0; $i<10; $i++)
+    @mun for($j=0; $j<$i; $j++)
+        *
     @endfor
-    <hr>
-    <h3>if statement and print variable</h3>
-    @mun if(!isset($_GET[0]))
-        plz input $_GET[0]
-    @mun elif($_GET[0] == "munsiwoo")
-        hello, admin!
-    @mun else
-        your input is "@var($_GET[0])"
-    @endif
+    <br>
+@endfor
+<hr>
+<h3>if statement and print variable</h3>
+@mun if(!isset($_GET[0]))
+    plz input $_GET[0]
+@mun elif($_GET[0] == "munsiwoo")
+    hello, admin!
+@mun else
+    your input is "@var($_GET[0])"
+@endif
 
-    <hr>
-    <h3>print passed variable</h3>
-    hello, @var($name)
+<hr>
+<h3>print passed variable</h3>
+hello, @var($name)
 
-    <h3>foreach</h3>
-    @mun foreach(['a','b','c'] as $a)
-        <p>@var($a)</p>
-    @endforeach
+<h3>foreach</h3>
+@mun foreach(['a','b','c'] as $a)
+    <p>@var($a)</p>
+@endforeach
 
-</body>
-</html>
+@import(footer.html)
